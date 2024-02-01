@@ -44,14 +44,12 @@ public class DirWatcher {
                     System.out.println("Event type: " + kind + ", File affected: " + changedPath);
 
                     //Read the properties file into a Map
-                    Map<String, String> filteredMap = PropReader.readProps(directory.toString() + "/" + changedPath.toString(), changedPath.toString(), REGEX) ;
+                    String filePath = directory.toString() + "/" + changedPath.toString();
+                    Map<String, String> filteredMap = PropReader.readProps(filePath, changedPath.toString(), REGEX) ;
                     //Relay2Server.relayToServer(filteredMap, this.IP, this.PORT);
 
                     //Start the client and send the Map to the server
-                    startClient(filteredMap, IP, PORT);
-
-                    //delete the File
-                    //deleteFile( directory.toString() + "/" + changedPath.toString() );
+                    ClientCl.startClient(filteredMap, IP, PORT, filePath);
                 }
 
                 boolean valid = key.reset();
@@ -67,46 +65,4 @@ public class DirWatcher {
         }
     }
 
-    private static void startClient(Map<String, String> filteredMap, String IP, int PORT) throws IOException {
-        // Create a SocketChannel
-        SocketChannel socketChannel = SocketChannel.open();
-        socketChannel.configureBlocking(false);
-
-        // Connect to the server
-        socketChannel.connect(new InetSocketAddress(IP, PORT));
-
-        // Wait for the connection to be established
-        while (!socketChannel.finishConnect()) {
-            // You can do other tasks here while waiting
-        }
-
-        System.out.println("Connected to server.");
-
-        // Send a message to the server
-        for (Map.Entry<String,String> entry : filteredMap.entrySet()) {
-            String prop = entry.getKey() + "=" + entry.getValue() ;
-            ByteBuffer buffer = ByteBuffer.wrap(prop.getBytes());
-            socketChannel.write(buffer);
-            System.out.println("Message sent to server: " + prop);
-        }
-        // Close the channel
-        socketChannel.close();
-    }
-
-    public void deleteFile(String filePath) {
-        // Create a File object representing the file to be deleted
-        File fileToDelete = new File(filePath);
-
-        // Check if the file exists before attempting deletion
-        if (fileToDelete.exists()) {
-            // Attempt to delete the file
-            if (fileToDelete.delete()) {
-                System.out.println("File deleted successfully: " + filePath);
-            } else {
-                System.out.println("Failed to delete the file: " + filePath);
-            }
-        } else {
-            System.out.println("File does not exist: " + filePath);
-        }
-    }
 }

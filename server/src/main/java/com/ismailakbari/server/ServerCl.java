@@ -70,8 +70,9 @@ public class ServerCl {
         if (bytesRead == -1) {
             // Connection closed by client
             key.cancel();
+            String ccAddr = clientChannel.getRemoteAddress().toString() ;
             clientChannel.close();
-            System.out.println("Connection closed by client: " + clientChannel.getRemoteAddress());
+            System.out.println("Connection closed by client: " + ccAddr );
             return;
         }
 
