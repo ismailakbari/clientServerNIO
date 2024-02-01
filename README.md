@@ -1,7 +1,7 @@
 # Client-Server project
 
-This is a Java/Gradle project written with OpenJDK 21 and Gradle 8.5
-This project has two modules: client module and server module
+This is a client-sever project written with Java non-blocking I/O.
+This project is written with OpenJDK 21 and Gradle 8.5 and has two modules: client module and server module. 
 
 ## Table of Contents
 
@@ -30,15 +30,15 @@ client app watches the watchDir directory for changes (add, modify) in Property 
 The server app listens to the port and put the properties received in the determined output directory in a file withe same name as the client file.
 
 ## How to run
-1. First run the client app
+1. First run the server app
+   $java -jar clientServer.server.jar /path_to_config/<server_config_file>.properties
+   see "server_config.properties" in the repo as an example.
+2. Run the client app
     $java -jar clientServer.client.jar /path_to_config/<client_config_file>.properties
     see "client_config.properties" and "client_config2.properties" in the repo as example.
     you can run multiple instances of the client app (with the same or different config file). It uses multithreading.
 
-2. Run the server app
-   $java -jar clientServer.server.jar /path_to_config/<server_config_file>.properties
-   see "server_config.properties" in the repo as an example.
 
 
 ## Contributing
-Ismail Akbari
+Ismail Akbari Feb 1, 2024
