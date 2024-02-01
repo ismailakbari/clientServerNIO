@@ -25,61 +25,10 @@ public class Main {
             PORT = Integer.parseInt(config.get("PORT"));
 
             ServerCl.startServer(PORT);
-            /*
-            ServerSocket serverSocket = new ServerSocket(PORT);
-            System.out.println("Server is listening on port " + PORT + " ...");
 
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected: " + clientSocket);
-
-                // Handle the client in a separate thread
-                Thread clientThread = new Thread(() -> handleClient(clientSocket, outputPath));
-                clientThread.start();
-            }*/
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-    private static void handleClient(Socket clientSocket, String filePath) {
-        try {
-            InputStream inputStream = clientSocket.getInputStream();
-            OutputStream outputStream = clientSocket.getOutputStream();
-
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            StringBuilder props = new StringBuilder();
-            String clientFilename ="";
-            boolean readFilename = false;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                String receivedMessage = new String(buffer, 0, bytesRead);
-                if(!readFilename && receivedMessage.contains("filename="))
-                {
-                    readFilename = true;
-                    String[] fn = receivedMessage.split("filename=");
-                    clientFilename = fn[1].trim();
-                    System.out.println("filename split:" + fn[0] + "|" + fn[1]);
-                }
-                else
-                    props.append(receivedMessage);
-                //props.append(System.getProperty("line.separator"));
-                //PropWriter.writeProps(filePath, receivedMessage);
-                //System.out.println("Received from " + clientSocket + ": " + receivedMessage);
-                // Send a response back to the client
-                String responseMessage = "Server received your message: " + receivedMessage;
-                outputStream.write(responseMessage.getBytes());
-            }
-            //System.out.println("sb=" + props);
-            PropWriter.writeProps2(filePath + "/" + clientFilename, "" + props);
-
-            System.out.println("Client disconnected: " + clientSocket);
-            clientSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    //server part
 
 }
