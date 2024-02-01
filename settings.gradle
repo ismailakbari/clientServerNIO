@@ -1,4 +1,4 @@
-rootProject.name = 'clientServer'
+rootProject.name = 'clientServerNIO'
 include 'client'
 include 'server'
 

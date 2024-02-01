@@ -2,6 +2,9 @@ package com.ismailakbari.client;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
 import java.nio.file.*;
 import java.util.Map;
 
@@ -40,15 +43,17 @@ public class DirWatcher {
 
                     System.out.println("Event type: " + kind + ", File affected: " + changedPath);
 
-                    // You can perform actions based on the type of event (create, delete, modify)
-                    // For example, print a message, trigger a process, etc.
+                    //Read the properties file into a Map
                     Map<String, String> filteredMap = PropReader.readProps(directory.toString() + "/" + changedPath.toString(), changedPath.toString(), REGEX) ;
-                    Relay2Server.relayToServer(filteredMap, this.IP, this.PORT);
+                    //Relay2Server.relayToServer(filteredMap, this.IP, this.PORT);
+
+                    //Start the client and send the Map to the server
+                    startClient(filteredMap, IP, PORT);
+
                     //delete the File
-                    deleteFile( directory.toString() + "/" + changedPath.toString() );
+                    //deleteFile( directory.toString() + "/" + changedPath.toString() );
                 }
 
-                // It's important to reset the key after processing the events
                 boolean valid = key.reset();
                 if (!valid) {
                     System.out.println("WatchKey no longer valid. Exiting monitoring.");
@@ -60,6 +65,32 @@ public class DirWatcher {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void startClient(Map<String, String> filteredMap, String IP, int PORT) throws IOException {
+        // Create a SocketChannel
+        SocketChannel socketChannel = SocketChannel.open();
+        socketChannel.configureBlocking(false);
+
+        // Connect to the server
+        socketChannel.connect(new InetSocketAddress(IP, PORT));
+
+        // Wait for the connection to be established
+        while (!socketChannel.finishConnect()) {
+            // You can do other tasks here while waiting
+        }
+
+        System.out.println("Connected to server.");
+
+        // Send a message to the server
+        for (Map.Entry<String,String> entry : filteredMap.entrySet()) {
+            String prop = entry.getKey() + "=" + entry.getValue() ;
+            ByteBuffer buffer = ByteBuffer.wrap(prop.getBytes());
+            socketChannel.write(buffer);
+            System.out.println("Message sent to server: " + prop);
+        }
+        // Close the channel
+        socketChannel.close();
     }
 
     public void deleteFile(String filePath) {

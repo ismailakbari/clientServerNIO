@@ -16,13 +16,16 @@ public class Main {
 
         String outputPath ;// "/Users/ismail/IdeaProjects/Mine/clientServer/outputDir";
         int PORT ; //12345 ;
-
         Map<String, String> config = new HashMap<>();
+
         try {
+            //Read the server config file
             config = ConfigReader.readProps(args[0]);
             outputPath = config.get("outputPath");
             PORT = Integer.parseInt(config.get("PORT"));
 
+            ServerCl.startServer(PORT);
+            /*
             ServerSocket serverSocket = new ServerSocket(PORT);
             System.out.println("Server is listening on port " + PORT + " ...");
 
@@ -33,7 +36,7 @@ public class Main {
                 // Handle the client in a separate thread
                 Thread clientThread = new Thread(() -> handleClient(clientSocket, outputPath));
                 clientThread.start();
-            }
+            }*/
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,4 +79,7 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+    //server part
+
 }
