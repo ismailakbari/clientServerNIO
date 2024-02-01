@@ -45,11 +45,11 @@ public class DirWatcher {
 
                     //Read the properties file into a Map
                     String filePath = directory.toString() + "/" + changedPath.toString();
-                    Map<String, String> filteredMap = PropReader.readProps(filePath, changedPath.toString(), REGEX) ;
+                    Map<String, String> filteredMap = PropReader.readProps(filePath, REGEX) ;
                     //Relay2Server.relayToServer(filteredMap, this.IP, this.PORT);
 
                     //Start the client and send the Map to the server
-                    ClientCl.startClient(filteredMap, IP, PORT, filePath);
+                    ClientCl.startClient(filteredMap, IP, PORT, filePath, changedPath.toString());
                 }
 
                 boolean valid = key.reset();

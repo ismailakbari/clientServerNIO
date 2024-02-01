@@ -9,8 +9,9 @@ import java.util.Map;
 
 public class ClientCl {
 
+    private static final String PROP_DELIMITER ="==";
 
-    public static void startClient(Map<String, String> filteredMap, String IP, int PORT, String filePath) throws IOException {
+    public static void startClient(Map<String, String> filteredMap, String IP, int PORT, String filePath, String filename) throws IOException {
 
         // Create a SocketChannel
         SocketChannel socketChannel = SocketChannel.open();
@@ -27,9 +28,15 @@ public class ClientCl {
         System.out.println("Connected to server.");
 
         // Send a message to the server
+        //send filename first, then the properties. each entry is separated by a delimiter
+        //so we can split them on the server
+        ByteBuffer buffer = ByteBuffer.wrap((filename+PROP_DELIMITER).getBytes());
+        socketChannel.write(buffer);
+        System.out.println("Message sent to server: " + filename+PROP_DELIMITER);
+        //send props
         for (Map.Entry<String,String> entry : filteredMap.entrySet()) {
-            String prop = entry.getKey() + "=" + entry.getValue() ;
-            ByteBuffer buffer = ByteBuffer.wrap(prop.getBytes());
+            String prop = entry.getKey() + "=" + entry.getValue() + PROP_DELIMITER;
+            buffer = ByteBuffer.wrap(prop.getBytes());
             socketChannel.write(buffer);
             System.out.println("Message sent to server: " + prop);
         }
