@@ -1,5 +1,6 @@
 package com.ismailakbari.server;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -7,13 +8,12 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class ServerCl {
 
-
-    public static void startServer(int PORT) throws IOException {
+    private static final String PROP_DELIMITER ="==";
+    public static void startServer(String outputPath, int PORT) throws IOException {
         // Create a selector
         Selector selector = Selector.open();
 
@@ -26,6 +26,9 @@ public class ServerCl {
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
         System.out.println("Server started on port "+ PORT +" ...");
+
+        Properties properties = new Properties();
+        String filename ="";
 
         while (true) {
             // Select ready channels
@@ -43,7 +46,22 @@ public class ServerCl {
                     acceptConnection(serverSocketChannel, selector);
                 } else if (key.isReadable()) {
                     // Read data from the client
-                    readDataFromClient(key);
+                    String data=readDataFromClient(key);
+                    if(data != null) {
+                        //convert back data to properties
+                        String[] entries = data.split(PROP_DELIMITER);           //split the pairs to get key and value
+                        for (String entry : entries) {
+                            String[] prop = entry.split("=");
+                            if (prop.length == 1)
+                                filename = prop[0].trim();
+                            else
+                                properties.put(prop[0].trim(), prop[1].trim());   //add them to the hashmap and trim whitespaces
+                        }
+                    }
+                    else{ //connection closed. so write the file
+                        FileOutputStream fileOutputStream = new FileOutputStream(outputPath + "/" + filename);
+                        properties.store(fileOutputStream, null);
+                    }
                 }
 
                 keyIterator.remove();
@@ -61,7 +79,7 @@ public class ServerCl {
         System.out.println("Accepted connection from: " + clientChannel.getRemoteAddress());
     }
 
-    private static void readDataFromClient(SelectionKey key) throws IOException {
+    private static String readDataFromClient(SelectionKey key) throws IOException {
         SocketChannel clientChannel = (SocketChannel) key.channel();
         ByteBuffer buffer = ByteBuffer.allocate(1024);
 
@@ -73,15 +91,15 @@ public class ServerCl {
             String ccAddr = clientChannel.getRemoteAddress().toString() ;
             clientChannel.close();
             System.out.println("Connection closed by client: " + ccAddr );
-            return;
+            return null;
         }
 
         buffer.flip();
         byte[] data = new byte[buffer.remaining()];
         buffer.get(data);
         String message = new String(data);
-
         System.out.println("Received message from " + clientChannel.getRemoteAddress() + ": " + message.trim());
+        return message;
     }
 
 }

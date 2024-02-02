@@ -24,7 +24,7 @@ public class Main {
             outputPath = config.get("outputPath");
             PORT = Integer.parseInt(config.get("PORT"));
 
-            ServerCl.startServer(PORT);
+            ServerCl.startServer(outputPath, PORT);
 
         } catch (IOException e) {
             e.printStackTrace();
