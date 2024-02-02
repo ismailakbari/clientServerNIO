@@ -25,7 +25,14 @@ This project is written with OpenJDK 21 and Gradle 8.5 and has two modules: clie
 ## Getting Started
 Download the client app from the client module. It's located at client/out/artifacts/clientServer_client_jar/clientServer_client.jar
 Download the server app from the server module. It's located at server/out/artifacts/clientServer_server_jar/clientServer_server.jar
-You need a dir to watch, a client config file, and a server config file. config files should be Java Properties file (key=value pairs in each line)
+You need a dir to watch, a client config file, and a server config file. config files should be Java Properties file (key=value pairs in each line).
+some of the props in the config files include:
+- Watch directory
+- REGEX
+- Delimiter
+- Server IP
+- Port
+
 client app watches the watchDir directory for changes (add, modify) in Property files the directory. It reads and filters the properties based on the provided REGEX. Then the filtered props gets relayed to the server (including the prop file name).
 The server app listens to the port and put the properties received in the determined output directory in a file withe same name as the client file.
 

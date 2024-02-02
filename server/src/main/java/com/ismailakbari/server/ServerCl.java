@@ -12,8 +12,7 @@ import java.util.*;
 
 public class ServerCl {
 
-    private static final String PROP_DELIMITER ="==";
-    public static void startServer(String outputPath, int PORT) throws IOException {
+    public static void startServer(String outputPath, String PROP_DELIMITER, int PORT) throws IOException {
         // Create a selector
         Selector selector = Selector.open();
 

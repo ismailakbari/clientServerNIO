@@ -9,9 +9,7 @@ import java.util.Map;
 
 public class ClientCl {
 
-    private static final String PROP_DELIMITER ="==";
-
-    public static void startClient(Map<String, String> filteredMap, String IP, int PORT, String filePath, String filename) throws IOException {
+    public static void startClient(Map<String, String> filteredMap, String PROP_DELIMITER, String IP, int PORT, String filePath, String filename) throws IOException {
 
         // Create a SocketChannel
         SocketChannel socketChannel = SocketChannel.open();

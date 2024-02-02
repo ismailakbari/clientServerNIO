@@ -14,8 +14,9 @@ import java.util.Map;
 public class Main {
     public static void main(String[] args) {
 
-        String outputPath ;// "/Users/ismail/IdeaProjects/Mine/clientServer/outputDir";
-        int PORT ; //12345 ;
+        String outputPath ;// e.g. "/Users/ismail/IdeaProjects/Mine/clientServer/outputDir";
+        int PORT ; //e.g. 12345 ;
+        String DELIMITER; //e.g. ||
         Map<String, String> config = new HashMap<>();
 
         try {
@@ -23,8 +24,9 @@ public class Main {
             config = ConfigReader.readProps(args[0]);
             outputPath = config.get("outputPath");
             PORT = Integer.parseInt(config.get("PORT"));
+            DELIMITER = config.get("DELIMITER") ;
 
-            ServerCl.startServer(outputPath, PORT);
+            ServerCl.startServer(outputPath, DELIMITER, PORT);
 
         } catch (IOException e) {
             e.printStackTrace();

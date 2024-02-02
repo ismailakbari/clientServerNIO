@@ -13,14 +13,15 @@ public class DirWatcher {
     private WatchService watchService;
     private Path directory;
     private String REGEX ;
+    private String DELIMITER ;
     private String IP;
     private int PORT;
 
-    public DirWatcher(String directoryPath, String REGEX, String IP, int PORT) throws Exception {
+    public DirWatcher(String directoryPath, String REGEX, String DELIMITER, String IP, int PORT) throws Exception {
         this.IP = IP;
         this.PORT = PORT ;
         this.REGEX = REGEX ;
-
+        this.DELIMITER = DELIMITER ;
         this.watchService = FileSystems.getDefault().newWatchService();
         this.directory = Paths.get(directoryPath);
 
@@ -49,7 +50,7 @@ public class DirWatcher {
                     //Relay2Server.relayToServer(filteredMap, this.IP, this.PORT);
 
                     //Start the client and send the Map to the server
-                    ClientCl.startClient(filteredMap, IP, PORT, filePath, changedPath.toString());
+                    ClientCl.startClient(filteredMap, DELIMITER, IP, PORT, filePath, changedPath.toString());
                 }
 
                 boolean valid = key.reset();

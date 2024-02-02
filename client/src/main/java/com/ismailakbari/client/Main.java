@@ -12,6 +12,7 @@ public class Main {
 
         String watchPath ;// "/Users/ismail/IdeaProjects/Mine/clientServer/watchDir";
         String REGEX ; //"^[a-zA-z].*?";
+        String DELIMITER ; //e.g. ==
         String IP ; // "localhost" ;
         int PORT ; //12345 ;
 
@@ -21,11 +22,12 @@ public class Main {
             config = ConfigReader.readProps(args[0]);
             watchPath = config.get("watchPath");
             REGEX = config.get("REGEX");
+            DELIMITER = config.get("DELIMITER");
             IP = config.get("IP");
             PORT = Integer.parseInt(config.get("PORT"));
 
             //Watch the directory for file changes
-            DirWatcher directoryWatcher = new DirWatcher(watchPath, REGEX, IP, PORT);
+            DirWatcher directoryWatcher = new DirWatcher(watchPath, REGEX, DELIMITER, IP, PORT);
             directoryWatcher.start();
         } catch (Exception e) {
             e.printStackTrace();
